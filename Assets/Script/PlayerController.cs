@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private ParticleSystem particulaD;
     [SerializeField] private ParticleSystem particulaE;
 
+    //Audio
+    private AudioSource playerAudio;
 
 
 
@@ -44,12 +46,15 @@ public class PlayerController : MonoBehaviour
     { 
         playerRb = GetComponent<Rigidbody>();
         playerAnim = GetComponent<Animator>();
+        playerAudio = GetComponent<AudioSource>();
     }
 
     public void OnJump(InputValue value)
     {
         if(value.isPressed && isOnGround)
         {
+            playerAudio.PlayOneShot(playerAudio.clip, 1.0f);
+
             //Parar particulas de poeira
             particulaD.Stop();
             particulaE.Stop();
@@ -68,7 +73,7 @@ public class PlayerController : MonoBehaviour
 
    private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.CompareTag("Ground"))
+        if(collision.gameObject.CompareTag("Ground") && !gameOver)
         {
             //Ativar particulas de poeira
             particulaD.Play();
@@ -101,12 +106,7 @@ public class PlayerController : MonoBehaviour
             Vector3.down * (gravityModifier -1)
             * Physics.gravity.magnitude, ForceMode.Acceleration);
     
-        if (gameOver)
-        {
-            //Parar particulas de poeira
-            particulaD.Stop();
-            particulaE.Stop();
-        }
+       
     }
 
 }
